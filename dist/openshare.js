@@ -195,7 +195,7 @@ var ShareTransforms = {
 
   // set Twitter share URL
   twitter: function twitter(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     // if iOS user and ios data attribute defined
     // build iOS URL scheme as single string
@@ -242,7 +242,7 @@ var ShareTransforms = {
 
   // set Twitter retweet URL
   twitterRetweet: function twitterRetweet(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     // if iOS user and ios data attribute defined
     if (ios && data.ios) {
@@ -270,7 +270,7 @@ var ShareTransforms = {
 
   // set Twitter like URL
   twitterLike: function twitterLike(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     // if iOS user and ios data attribute defined
     if (ios && data.ios) {
@@ -298,7 +298,7 @@ var ShareTransforms = {
 
   // set Twitter follow URL
   twitterFollow: function twitterFollow(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     // if iOS user and ios data attribute defined
     if (ios && data.ios) {
@@ -356,7 +356,7 @@ var ShareTransforms = {
 
   // set YouTube play URL
   youtube: function youtube(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     // if iOS user
     if (ios && data.ios) {
@@ -377,7 +377,7 @@ var ShareTransforms = {
 
   // set YouTube subcribe URL
   youtubeSubscribe: function youtubeSubscribe(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     // if iOS user
     if (ios && data.ios) {
@@ -406,7 +406,7 @@ var ShareTransforms = {
 
   // set Instagram follow URL
   instagramFollow: function instagramFollow(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     // if iOS user
     if (ios && data.ios) {
@@ -449,7 +449,7 @@ var ShareTransforms = {
 
   // set Google maps URL
   googleMaps: function googleMaps(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     if (data.search) {
       data.q = data.search;
@@ -546,7 +546,7 @@ var ShareTransforms = {
 
   // set Flickr follow URL
   flickr: function flickr(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     // if iOS user
     if (ios && data.ios) {
@@ -575,7 +575,7 @@ var ShareTransforms = {
 
   // set sms share URL
   sms: function sms(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     return {
       url: ios ? 'sms:&' : 'sms:?',
@@ -607,7 +607,7 @@ var ShareTransforms = {
 
   // set Github fork URL
   github: function github(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     // eslint-disable-line no-unused-vars
     var url = data.repo ? 'https://github.com/' + data.repo : data.url;
 
@@ -627,7 +627,7 @@ var ShareTransforms = {
 
   // set Dribbble share URL
   dribbble: function dribbble(data) {
-    var ios = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+    var ios = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     // eslint-disable-line no-unused-vars
     var url = data.shot ? 'https://dribbble.com/shots/' + data.shot + '?' : data.url + '?';
     return {
@@ -700,24 +700,22 @@ var OpenShare = function () {
       // if iOS share URL has been set then use timeout hack
       // test for native app and fall back to web
       if (this.mobileShareUrl) {
-        (function () {
-          var start = new Date().valueOf();
+        var start = new Date().valueOf();
 
-          setTimeout(function () {
-            var end = new Date().valueOf();
+        setTimeout(function () {
+          var end = new Date().valueOf();
 
-            // if the user is still here, fall back to web
-            if (end - start > 1600) {
-              return;
-            }
+          // if the user is still here, fall back to web
+          if (end - start > 1600) {
+            return;
+          }
 
-            window.location = _this.shareUrl;
-          }, 1500);
+          window.location = _this.shareUrl;
+        }, 1500);
 
-          window.location = _this.mobileShareUrl;
+        window.location = this.mobileShareUrl;
 
-          // open mailto links in same window
-        })();
+        // open mailto links in same window
       } else if (this.type === 'email') {
         window.location = this.shareUrl;
 
@@ -1125,7 +1123,7 @@ var CountTransforms = {
   twitter: function twitter(url) {
     return {
       type: 'get',
-      url: 'https://api.openshare.social/job?url=' + url + '&key=',
+      url: 'https://public.newsharecounts.com/count.json?url=' + url,
       transform: function transform(xhr) {
         var count = JSON.parse(xhr.responseText).count || 0;
         return storeCount(this, count);
@@ -1442,7 +1440,7 @@ var Count = function () {
   }, {
     key: 'storeSet',
     value: function storeSet(type) {
-      var count = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+      var count = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       //eslint-disable-line
       if (!window.localStorage || !type) {
         return;
@@ -1607,14 +1605,14 @@ var CountAPI = function CountAPI() {
   //eslint-disable-line
   // global OpenShare referencing internal class for instance generation
   var Count$$1 = function Count$$1(_ref, cb) {
-    var type = _ref.type;
-    var url = _ref.url;
-    var _ref$appendTo = _ref.appendTo;
-    var appendTo = _ref$appendTo === undefined ? false : _ref$appendTo;
-    var element = _ref.element;
-    var classes = _ref.classes;
-    var _ref$key = _ref.key;
-    var key = _ref$key === undefined ? null : _ref$key;
+    var type = _ref.type,
+        url = _ref.url,
+        _ref$appendTo = _ref.appendTo,
+        appendTo = _ref$appendTo === undefined ? false : _ref$appendTo,
+        element = _ref.element,
+        classes = _ref.classes,
+        _ref$key = _ref.key,
+        key = _ref$key === undefined ? null : _ref$key;
 
     _classCallCheck(this, Count$$1);
 

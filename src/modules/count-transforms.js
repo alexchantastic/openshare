@@ -175,7 +175,7 @@ export default {
   twitter(url) {
     return {
       type: 'get',
-      url: `https://api.openshare.social/job?url=${url}&key=`,
+      url: `https://public.newsharecounts.com/count.json?url=${url}`,
       transform(xhr) {
         const count = JSON.parse(xhr.responseText).count || 0;
         return storeCount(this, count);
